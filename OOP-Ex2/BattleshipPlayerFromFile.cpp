@@ -15,12 +15,36 @@ void BattleshipPlayerFromFile::setBoard(int player, const char** playerBoard, in
 
 
 bool BattleshipPlayerFromFile::init(const std::string& path)
-{
-	//TODO: MATAN
+{	
+	string attackPath;
+	HANDLE dir;
+	WIN32_FIND_DATAA fileData; //data struct for file
+	vector<string> fileNames; //vactor of name files to sort lexicography
+	string file_suffix = ATTACK_SUFFIX; //only *.attack files
+	dir = FindFirstFileA((path + file_suffix).c_str(), &fileData); // Notice: Unicode compatible version of FindFirstFile
+	if (dir != INVALID_HANDLE_VALUE) //check if the dir opened successfully and found a matching file
+	{
+		do
+		{
+			fileNames.push_back(fileData.cFileName);
+		} while (FindNextFileA(dir, &fileData));
+	}	
+	else
+	{
+		return false;
+	}
+	//sort the relevant file names lexicography
+	sort(fileNames.begin(), fileNames.end());
 	// if player == 0 --> assign first *.attack to path
 	// else if player == 1 --> assign second *.attack to path
-	string attackPath;
-
+	if(this->playerNum==0)
+		attackPath = path + "\\" + fileNames[0];
+	else
+		if(fileNames.size()>1)
+			attackPath = path + "\\" + fileNames[1];
+		else
+			attackPath = path + "\\" + fileNames[0];
+	
 	//check if attack-file opening and parsing was successfull (without throwing exceptions from constructor)
 	if (parseAttackMoves(attackPath) < 0)
 	{

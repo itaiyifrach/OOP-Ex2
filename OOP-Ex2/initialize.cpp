@@ -1,49 +1,23 @@
 #include "initialize.h"
 
-int initialize(int argc, char** argv, char** board, int numRows, int numCols, string& attackApath, string& attackBpath) {
-	string basePath, boardPath, popenResult;
+int initialize(int argc, char** argv, char** board, int numRows, int numCols,string& basePath) {
+	string boardPath;
     
 	//if didn't get argument- path is the cwd, else it is the path given in argv[1]
 	if (argc <= 1)
 	{
-		char* temp = _getcwd(NULL, 256);	
+		auto temp = _getcwd(nullptr, 256);	
 		basePath = temp;
 		free(temp);
-	}
-		
+	}		
 	else
-		basePath = argv[1];
-	//check if path is valid- if not print error and return -1
-	if (extractFilesFromPath(basePath,popenResult) != 0)
-	{
-		cout << WRONG_PATH << basePath << endl;
+		basePath = argv[1];		
+	
+	//check if there was no board file
+	if(parsePath(basePath,boardPath)!=0)
+	{		
 		return -1;
 	}
-	//check is a flag var- equals -1 if there was a problem with one of the files
-	int check = 0;
-	//check if there was no board file-if so print error and flag check.
-	if (parsePath(basePath,popenResult, ".sboard", boardPath) != 0)
-	{
-		cout << MISSING_BOARD << basePath << endl;
-		check = -1;
-	}
-
-	//check if there was no attackA file-if so print error and flag check.
-	if (parsePath(basePath,popenResult, ".attack-a", attackApath) != 0)
-	{
-		cout << MISSING_ATTACK_FILE_A << basePath << endl;
-		check = -1;
-	}
-
-	//check if there was no attackB file-if so print error and flag check.
-	if (parsePath(basePath,popenResult, ".attack-b", attackBpath) != 0)
-	{
-		cout << MISSING_ATTACK_FILE_B << basePath << endl;
-		check = -1;
-	}
-	
-	if (check == -1)
-		return-1;
 
 	// \n and \r\n compatible.
 	// read getline(inf) X 10, getc from line X 10. empty line / invalid char is a space.
@@ -54,7 +28,7 @@ int initialize(int argc, char** argv, char** board, int numRows, int numCols, st
 	char shipMistakeTypeA = 0, shipMistakeTypeB = 0;
 	if (checkBoard(board, mistakes) == false)
 	{
-		for (int i = 0; i < 7; i++)
+		for (auto i = 0; i < 7; i++)
 		{
 			if (mistakes[i] != 0)
 			{
@@ -96,43 +70,41 @@ int initialize(int argc, char** argv, char** board, int numRows, int numCols, st
 }
 
 
-int extractFilesFromPath(const string& path, string& popenResult)
+
+int parsePath(const string& basePath,string& file_path)
 {
-	string newPath = "\"" + path + "\"";
-	//system command to find all files from current dir.
-	string cmd1 = "2>NUL dir " + newPath + " /b /a-d";	
-	FILE* fp = _popen(cmd1.c_str(), "r");
-	if (fp == NULL)
-		return -1;
-	char buffer[4096];
-	while (fgets(buffer, 4095, fp))
+	HANDLE dir;
+	WIN32_FIND_DATAA fileData; //data struct for file
+							 
+	string file_suffix = BOARD_SUFFIX; //only *.sboard files
+	dir = FindFirstFileA((basePath + file_suffix).c_str(), &fileData); // Notice: Unicode compatible version of FindFirstFile
+	if (dir != INVALID_HANDLE_VALUE) //check if the dir opened successfully
 	{
-		popenResult += string(buffer);
-	}	
+		string fileName = fileData.cFileName;
+		file_path = basePath + "\\" + fileName;		
+	}
+	else
+	{
+		//check if no .sboard file was found or there was a problem with the dir,and print error accordingly
+		if (GetLastError() != ERROR_FILE_NOT_FOUND)
+		{
+			cout << WRONG_PATH << basePath << endl;
+		}
+		else
+		{
+			cout << MISSING_BOARD << basePath << endl;
+		}
+		return -1;
+	}
+			
 	return 0;
 }
 
-int parsePath(const string& basePath, string& poppenResult, const string& file_suffix, string& file_path)
-{
-	std::istringstream strStream(poppenResult);
-	string line;
-	while(getline(strStream,line))
-	{
-		if(line.find(file_suffix, line.size() - file_suffix.size()) !=string::npos)
-		{
-			file_path = basePath + "/" + line;
-			return 0;
-		}
-	}
-	
-	return -1;
-}
-
-void parseBoard(const string& boardPath,char**& board,int rows,int cols)
+void parseBoard(const string& boardPath, char**& board, int rows, int cols)
 {
 	ifstream ifs(boardPath);
 	string line;
-	for (int i = 0; i < rows; i++)
+	for (auto i = 0; i < rows; i++)
 	{		
 		getline(ifs, line);		
 		size_t j = 0;
@@ -146,9 +118,10 @@ void parseBoard(const string& boardPath,char**& board,int rows,int cols)
 				board[i][j] = ' ';
 		}
 		//line is less than 10 characters-add spaces
-		for(j;j<10;j++)
+		for(j;j<cols;j++)
 			board[i][j] = ' ';
 	}
+	
 }
 
 
