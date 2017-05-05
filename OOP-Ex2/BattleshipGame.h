@@ -1,6 +1,6 @@
-#pragma once
-
 #include "BattleshipPlayerFromFile.h"
+#include <windows.h>
+
 #define ROWS 10
 #define COLS 10
 #define NUM_OF_SHIPS 5
@@ -75,5 +75,8 @@ private:
 	bool updateBaordAndCheckSink(int i, int j) const;
 
 	void BattleshipGame::getNextAttack(int& turnOf, bool& endGame, pair<int, int>& currAttack) const;
+
+	void printColorBoard();
+	void gotoxy(int column, int line);
 };
 
