@@ -40,6 +40,7 @@ void BattleshipGame::playGame() {
 	bool endGame = false;
 
 	printColorBoard();
+	updateColorBoard(5, 5);
 
 	//0 iff its A's turn
 	int turnOf = 0;
@@ -237,43 +238,64 @@ bool BattleshipGame::updateBaordAndCheckSink(int i, int j) const {
 
 void BattleshipGame::printColorBoard()
 {
-	// 9 = BLUE, 12 = RED
-	int playerAColor = 9, playerBColor = 12;
+	// 9 = BLUE, 12 = RED, 15 = SEA
+	int playerAColor = 144, playerBColor = 207, seaColor = 176;
 
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	/*
-	for (int k = 1; k < 255; k++)
+	for (int k = 1; k < 400; k++)
 	{
 		SetConsoleTextAttribute(hConsole, k);
 		cout << k << " I want to be nice today!" << endl;
 	}
 	*/
-
-	cout << "=============BATTLESHIP=============";
+	SetConsoleTextAttribute(hConsole, 15);
+	cout << "|------BATTLESHIP------|" << endl;
+	cout << "|                      |" << endl;
 	for (int i = 0; i < rows; ++i)
 	{
-		cout << " " << endl;
+		SetConsoleTextAttribute(hConsole, 15);
+		cout << "| ";
 		for (int j = 0; j < cols; j++) {
 			if ((65 < mainBoard[i][j]) && (mainBoard[i][j] < 90)) {				// player A
-				cout << playerAColor << mainBoard[i][j] << " ";
+				SetConsoleTextAttribute(hConsole, playerAColor);	
+				//cout << mainBoard[i][j] << " ";
+				cout << " " << " ";
 			}
-			else if ((97 < mainBoard[i][j]) && (mainBoard[i][j] < 122))  {		// player B
-				cout << playerBColor << mainBoard[i][j] << " ";
+			if ((97 < mainBoard[i][j]) && (mainBoard[i][j] < 122))  {			// player B
+				SetConsoleTextAttribute(hConsole, playerBColor);
+				//cout << mainBoard[i][j] << " ";
+				cout << " " << " ";
+			}
+			if (mainBoard[i][j] == 32)											// sea		
+			{
+				SetConsoleTextAttribute(hConsole, seaColor);
+				//cout << '~' << " ";
+				cout << " " << " ";
 			}
 		}
+		SetConsoleTextAttribute(hConsole, 15);
+		cout << " |" << endl;
 	}
-	cout << " " << endl;
-	cout << "====================================";
-	cout << " " << endl;
+	SetConsoleTextAttribute(hConsole, 15);
+	cout << "|______________________|" << endl;
 }
 
-void BattleshipGame::gotoxy(int column, int line)
+void BattleshipGame::gotoxy(int i, int j)
 {
 	COORD coord;
-	coord.X = column;
-	coord.Y = line;
+	coord.X = i;
+	coord.Y = j;
 	SetConsoleCursorPosition(
 		GetStdHandle(STD_OUTPUT_HANDLE),
 		coord
 	);
+}
+
+void BattleshipGame::updateColorBoard(int i, int j)
+{
+	gotoxy(i, j);
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, 176);
+	cout << "X";
 }

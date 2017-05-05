@@ -77,6 +77,7 @@ private:
 	void BattleshipGame::getNextAttack(int& turnOf, bool& endGame, pair<int, int>& currAttack) const;
 
 	void printColorBoard();
-	void gotoxy(int column, int line);
+	void gotoxy(int i, int j);
+	void BattleshipGame::updateColorBoard(int i, int j);
 };
 
