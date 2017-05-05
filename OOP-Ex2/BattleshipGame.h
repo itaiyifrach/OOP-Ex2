@@ -9,6 +9,10 @@
 #define POINTS_STR "Points:"
 #define PLAYER_A_POINTS_STR "Player A: "
 #define PLAYER_B_POINTS_STR "Player B: "
+#define PLAYER_A_COLOR 9
+#define PLAYER_B_COLOR 12
+#define SEA_COLOR 11
+#define WHITE_COLOR 15
 
 class BattleshipGame
 {
@@ -76,8 +80,9 @@ private:
 
 	void BattleshipGame::getNextAttack(int& turnOf, bool& endGame, pair<int, int>& currAttack) const;
 
-	void printColorBoard();
-	void gotoxy(int i, int j);
-	void BattleshipGame::updateColorBoard(int i, int j);
+	void printColorBoard() const;
+	static void gotoxy(int i, int j);
+	void updateColorBoard(int i, int j);
+	static void hideCursor();
 };
 

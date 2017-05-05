@@ -122,6 +122,7 @@
     <ClInclude Include="BattleshipPlayerFromFile.h" />
     <ClInclude Include="BattleshipPlayerNaive.h" />
     <ClInclude Include="BoardUtils.h" />
+    <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="initialize.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

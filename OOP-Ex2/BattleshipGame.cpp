@@ -39,8 +39,8 @@ void BattleshipGame::playGame() {
 	bool wasAlreadyHit;
 	bool endGame = false;
 
-	printColorBoard();
-	updateColorBoard(5, 5);
+	system("cls");				// clear the console
+	printColorBoard();			// printing stating board
 
 	//0 iff its A's turn
 	int turnOf = 0;
@@ -65,6 +65,10 @@ void BattleshipGame::playGame() {
 		i = currAttack.first - 1;
 		j = currAttack.second - 1;
 		
+		//updateColorBoard(i, j);
+		//hideCursor();
+
+
 		if (BoardUtils::selfHit(mainBoard[i][j], turnOf)) {
 			selfHit = true;
 		}
@@ -236,11 +240,8 @@ bool BattleshipGame::updateBaordAndCheckSink(int i, int j) const {
 	}
 }
 
-void BattleshipGame::printColorBoard()
+void BattleshipGame::printColorBoard() const
 {
-	// 9 = BLUE, 12 = RED, 15 = SEA
-	int playerAColor = 144, playerBColor = 207, seaColor = 176;
-
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	/*
 	for (int k = 1; k < 400; k++)
@@ -249,35 +250,32 @@ void BattleshipGame::printColorBoard()
 		cout << k << " I want to be nice today!" << endl;
 	}
 	*/
-	SetConsoleTextAttribute(hConsole, 15);
+	SetConsoleTextAttribute(hConsole, WHITE_COLOR);
 	cout << "|------BATTLESHIP------|" << endl;
 	cout << "|                      |" << endl;
 	for (int i = 0; i < rows; ++i)
 	{
-		SetConsoleTextAttribute(hConsole, 15);
+		SetConsoleTextAttribute(hConsole, WHITE_COLOR);
 		cout << "| ";
 		for (int j = 0; j < cols; j++) {
 			if ((65 < mainBoard[i][j]) && (mainBoard[i][j] < 90)) {				// player A
-				SetConsoleTextAttribute(hConsole, playerAColor);	
-				//cout << mainBoard[i][j] << " ";
-				cout << " " << " ";
+				SetConsoleTextAttribute(hConsole, PLAYER_A_COLOR);
+				cout << mainBoard[i][j] << " ";
 			}
 			if ((97 < mainBoard[i][j]) && (mainBoard[i][j] < 122))  {			// player B
-				SetConsoleTextAttribute(hConsole, playerBColor);
-				//cout << mainBoard[i][j] << " ";
-				cout << " " << " ";
+				SetConsoleTextAttribute(hConsole, PLAYER_B_COLOR);
+				cout << mainBoard[i][j] << " ";
 			}
 			if (mainBoard[i][j] == 32)											// sea		
 			{
-				SetConsoleTextAttribute(hConsole, seaColor);
-				//cout << '~' << " ";
-				cout << " " << " ";
+				SetConsoleTextAttribute(hConsole, SEA_COLOR);
+				cout << '~' << " ";
 			}
 		}
-		SetConsoleTextAttribute(hConsole, 15);
+		SetConsoleTextAttribute(hConsole, WHITE_COLOR);
 		cout << " |" << endl;
 	}
-	SetConsoleTextAttribute(hConsole, 15);
+	SetConsoleTextAttribute(hConsole, WHITE_COLOR);
 	cout << "|______________________|" << endl;
 }
 
@@ -294,8 +292,33 @@ void BattleshipGame::gotoxy(int i, int j)
 
 void BattleshipGame::updateColorBoard(int i, int j)
 {
-	gotoxy(i, j);
+	// line/col offsets due to the board boarders
+	int lineOffset = 2, colOffset = 2;
+	
+	gotoxy(i + lineOffset, j*2 + colOffset);
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, 176);
+
+	// setting X color due to type of the tile
+	if (mainBoard[i][j] == 'B' || mainBoard[i][j] == 'P' || mainBoard[i][j] == 'M' || mainBoard[i][j] == 'D')
+	{
+		SetConsoleTextAttribute(hConsole, PLAYER_A_COLOR);
+	}
+	if (mainBoard[i][j] == 'b' || mainBoard[i][j] == 'p' || mainBoard[i][j] == 'm' || mainBoard[i][j] == 'd')
+	{
+		SetConsoleTextAttribute(hConsole, PLAYER_B_COLOR);
+	}
+	if (mainBoard[i][j] == ' ')
+	{
+		SetConsoleTextAttribute(hConsole, SEA_COLOR);
+	}
 	cout << "X";
+}
+
+void BattleshipGame::hideCursor()
+{
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = FALSE;
+	SetConsoleCursorInfo(consoleHandle, &info);
 }

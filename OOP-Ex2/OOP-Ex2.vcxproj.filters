@@ -50,5 +50,8 @@
     <ClInclude Include="BoardUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IBattleshipGameAlgo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
