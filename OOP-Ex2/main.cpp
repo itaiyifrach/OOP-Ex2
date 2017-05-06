@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 		delete[](mainBoard);
 		return -1;
 	}
-	game.playGame();
+	game.playGame(useAnimation, delay);
 
 	delete[](mainBoard);
 	return 0;
