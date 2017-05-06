@@ -16,21 +16,23 @@ void BattleshipPlayerNaive::setBoard(int player, const char** playerBoard, int n
 				this->myBoard[i][j] = '%';
 				if (i > 0)
 				{
-					this->myBoard[i-1][j] = '%';
+					this->myBoard[i - 1][j] = '%';
 				}
 				if (i < numRows)
 				{
-					this->myBoard[i+1][j] = '%';
+					this->myBoard[i + 1][j] = '%';
 				}
 				if (j > 0)
 				{
-					this->myBoard[i][j-1] = '%';
+					this->myBoard[i][j - 1] = '%';
 				}
 				if (j < numCols)
 				{
-					this->myBoard[i][j+1] = '%';
+					this->myBoard[i][j + 1] = '%';
 				}
 			}
+			else
+				this->myBoard[i][j] = playerBoard[i][j];
 		}
 	}
 }
@@ -65,5 +67,11 @@ std::pair<int, int> BattleshipPlayerNaive::attack() {
 	result.second++;
 	currentAttack = result;
 	return currentAttack;
+}
+
+IBattleshipGameAlgo* GetAlgorithm()
+{
+	return new BattleshipPlayerNaive();
+
 }
 

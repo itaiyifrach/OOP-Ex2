@@ -28,7 +28,7 @@ class BattleshipGame
 	bool corrupted;
 
 public:
-	BattleshipGame(IBattleshipGameAlgo* playerA, IBattleshipGameAlgo* playerB, char** mainBoard, const std::string& path)
+	BattleshipGame(IBattleshipGameAlgo* playerA, IBattleshipGameAlgo* playerB, char** mainBoard)
 		: PlayerA(playerA), PlayerB(playerB), corrupted(false) {
 
 		//copy mainBoard
@@ -42,12 +42,6 @@ public:
 		initPlayerBoard(0);
 		initPlayerBoard(1);
 		
-		//check if player init was successfull (without throwing exceptions from constructor)
-		if (PlayerA->init(path) && PlayerB->init(path))
-		{
-			corrupted = true;
-			delete[](mainBoard);
-		}
 	}
 
 	BattleshipGame(const BattleshipGame&) = delete;
@@ -82,7 +76,7 @@ private:
 
 	void printColorBoard() const;
 	static void gotoxy(int i, int j);
-	void updateColorBoard(int i, int j);
+	void updateColorBoard(int i, int j) const;
 	static void hideCursor();
 };
 

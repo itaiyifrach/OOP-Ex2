@@ -290,7 +290,7 @@ void BattleshipGame::gotoxy(int i, int j)
 	);
 }
 
-void BattleshipGame::updateColorBoard(int i, int j)
+void BattleshipGame::updateColorBoard(int i, int j) const
 {
 	// line/col offsets due to the board boarders
 	int lineOffset = 2, colOffset = 2;

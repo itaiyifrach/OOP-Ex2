@@ -33,9 +33,8 @@ public:
 		return true;
 	}
 
-	//TODO: should be here?
 	// This method must be implemented in each player(algorithm) .cpp file
-	//ALGO_API IBattleshipGameAlgo* GetAlgorithm();
+	IBattleshipGameAlgo* GetAlgorithm();
 	
 	// ask player for his move
 	virtual std::pair<int, int> attack() override;

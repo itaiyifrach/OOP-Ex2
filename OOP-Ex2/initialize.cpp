@@ -1,17 +1,46 @@
 #include "initialize.h"
 
-int initialize(int argc, char** argv, char** board, int numRows, int numCols,string& basePath) {
+int initialize(int argc, char** argv, char** board, int numRows, int numCols, string& basePath, bool* useAnimation, int* delay) {
 	string boardPath;
-    
 	//if didn't get argument- path is the cwd, else it is the path given in argv[1]
-	if (argc <= 1)
+	auto temp = _fullpath(nullptr, "", 256);
+	basePath = temp;
+	free(temp);
+
+	if (argc == 2)
 	{
-		auto temp = _getcwd(nullptr, 256);	
+		if (argv[1] == "-quiet")
+		{
+			*useAnimation = false;
+		}
+		else
+		{
+			char* temp = _fullpath(nullptr, argv[1], 256);
+			basePath = temp;
+			free(temp);
+		}
+	}
+	else if (argc == 3)
+	{
+		if (argv[1] == "-delay")
+		{
+			*delay = atoi(argv[2]);
+		}
+		else
+		{
+			char* temp = _fullpath(nullptr, argv[1], 256);
+			basePath = temp;
+			free(temp);
+			*useAnimation = false;
+		}
+	}
+	else if (argc == 4)
+	{
+		char* temp = _fullpath(nullptr, argv[1], 256);
 		basePath = temp;
 		free(temp);
-	}		
-	else
-		basePath = argv[1];		
+		*delay = atoi(argv[3]);
+	}
 	
 	//check if there was no board file
 	if(parsePath(basePath,boardPath)!=0)
@@ -422,3 +451,65 @@ void printBoard(char** board)
 	cout << "===================================";
 	cout << " " << endl;
 }
+
+vector<string> getLibraries(string& path)
+{
+	HANDLE dir;
+	WIN32_FIND_DATAA fileData; //data struct for file
+	vector<string> fileNames;
+	
+	// iterate over *.dll files in path	
+
+	string file_suffix = DLL_SUFFIX; // only .dll endings
+	dir = FindFirstFileA((path + file_suffix).c_str(), &fileData); // Notice: Unicode compatible version of FindFirstFile
+	if (dir != INVALID_HANDLE_VALUE) //check if the dir opened successfully
+	{
+		// test each file suffix and set variables as needed
+		do
+		{
+			string fileName = fileData.cFileName;			
+			cout << fileName << endl;			
+			fileNames.push_back(fileName);
+			
+		} while (FindNextFileA(dir, &fileData)); // Notice: Unicode compatible version of FindNextFile
+	}
+	else
+	{
+		cout << MISSING_ALGO << path << endl;
+		return fileNames;
+	}
+	if(fileNames.size()<2)
+	{
+		cout << MISSING_ALGO << path << endl;
+		return fileNames;
+	}
+	sort(fileNames.begin(), fileNames.end());
+	return fileNames;
+
+}
+
+IBattleshipGameAlgo* loadAlgo( const string& path, const string& fileName)
+{
+	// define function of the type we expect
+	typedef IBattleshipGameAlgo *(*GetAlgoFuncType)();
+	GetAlgoFuncType getAlgoFunc;
+	string algoPath = path + "//" + fileName;
+	// Load dynamic library
+	HINSTANCE hDll = LoadLibraryA(algoPath.c_str()); // Notice: Unicode compatible version of LoadLibrary
+	if (!hDll)
+	{
+		cout << LOAD_LIB_ERR << endl;
+		return nullptr;
+	}
+
+	// Get function pointer
+	getAlgoFunc = (GetAlgoFuncType)GetProcAddress(hDll, "GetAlgo");
+	if (!getAlgoFunc)
+	{
+		cout << LOAD_FUNC_ERR << endl;
+		return nullptr;
+	}
+	return getAlgoFunc();
+
+}
+
