@@ -69,7 +69,7 @@ std::pair<int, int> BattleshipPlayerNaive::attack() {
 	return currentAttack;
 }
 
-IBattleshipGameAlgo* GetAlgorithm()
+IBattleshipGameAlgo* BattleshipPlayerNaive::GetAlgorithm()
 {
 	return new BattleshipPlayerNaive();
 

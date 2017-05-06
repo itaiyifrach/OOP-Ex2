@@ -148,7 +148,7 @@ void BattleshipPlayerFromFile::printPlayerDiscription() const {
 	cout << endl;
 }
 
-IBattleshipGameAlgo* GetAlgorithm()
+IBattleshipGameAlgo* BattleshipPlayerFromFile::GetAlgorithm()
 {
 	return new BattleshipPlayerFromFile();
 
