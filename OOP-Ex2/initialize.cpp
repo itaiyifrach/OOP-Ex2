@@ -452,7 +452,7 @@ void printBoard(char** board)
 	cout << " " << endl;
 }
 
-vector<string> getLibraries(string& path)
+vector<string> getDLLNames(string& path)
 {
 	HANDLE dir;
 	WIN32_FIND_DATAA fileData; //data struct for file
