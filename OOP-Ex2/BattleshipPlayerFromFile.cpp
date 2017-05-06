@@ -3,7 +3,7 @@
 void BattleshipPlayerFromFile::setBoard(int player, const char** playerBoard, int numRows, int numCols) {
 	playerNum = player;
 	cols = numCols;
-	rows = numRows;
+	rows = numRows;	
 	this->myBoard = new char*[numRows];
 	for (int i = 0; i < numRows; ++i)
 	{

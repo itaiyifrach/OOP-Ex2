@@ -49,5 +49,8 @@ bool checkBoard(char** board, int* mistakes);
 bool checkShape(char** board, char** markedBoard, int posI, int posJ, char shipType, int shipSize, int* mistakes, int player);
 bool checkBound(char** board, char shipType, int i, int j, int* mistakes, int player, int* possibleAdj);
 
+//Seperating the main board by players
+void separateBoard(char** mainBoard, char** playerABoard, char** playerBBoard);
+
 //Prints the board to console
 void printBoard(char** board);

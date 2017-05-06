@@ -41,7 +41,7 @@ void BattleshipGame::playGame(bool useAnimation, int delay) {
 
 	if (useAnimation) {
 		system("cls");				// clearing the console
-		printColorBoard();			// printing stating board
+		printColorBoard();			// printing starting board
 		hideCursor();				// hiding the console cursor
 		Sleep(delay);
 	}

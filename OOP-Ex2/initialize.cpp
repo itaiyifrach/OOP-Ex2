@@ -31,7 +31,7 @@ int initialize(int argc, char** argv, char** board, int numRows, int numCols,str
 			*useAnimation = false;
 		}
 	}
-	else
+	else if (argc == 4)
 	{
 		basePath = argv[1];
 		*delay = atoi(argv[3]);
@@ -429,6 +429,27 @@ bool checkBound(char** board, char shipType, int i, int j, int* mistakes, int pl
 		}
 	}
 	return false;
+}
+
+void separateBoard(char** mainBoard, char** playerABoard, char** playerBBoard) {
+	char** playerABoard = new char*[ROWS_WIDTH];
+	char** playerBBoard = new char*[ROWS_WIDTH];
+
+	for (int i = 0; i < ROWS_WIDTH; ++i)
+	{
+		playerABoard[i] = new char[COLS_WIDTH];
+		playerBBoard[i] = new char[COLS_WIDTH];
+		for (int j = 0; j < COLS_WIDTH; j++) {
+			if ((65 < mainBoard[i][j]) && (mainBoard[i][j] < 90))
+				playerABoard[i][j] = mainBoard[i][j];
+			else if ((97 < mainBoard[i][j]) && (mainBoard[i][j] < 122))
+				playerBBoard[i][j] = mainBoard[i][j];
+			else {
+				playerABoard[i][j] = 32;
+				playerBBoard[i][j] = 32;
+			}
+		}
+	}
 }
 
 void printBoard(char** board)
