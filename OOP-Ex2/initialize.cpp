@@ -9,7 +9,7 @@ int initialize(int argc, char** argv, char** board, int numRows, int numCols, st
 
 	if (argc == 2)
 	{
-		if (argv[1] == "-quiet")
+		if (strcmp(argv[1], "-quiet") == 0)
 		{
 			*useAnimation = false;
 		}
@@ -22,7 +22,7 @@ int initialize(int argc, char** argv, char** board, int numRows, int numCols, st
 	}
 	else if (argc == 3)
 	{
-		if (argv[1] == "-delay")
+		if (strcmp(argv[1], "-delay") == 0)
 		{
 			*delay = atoi(argv[2]);
 		}
