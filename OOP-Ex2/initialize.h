@@ -42,7 +42,7 @@ int parsePath(const string& basePath, string& file_path);
 void parseBoard(const string& boardPath, char**& board, int rows, int cols);
 
 //Check if input args are valid. If so parse the board and check its validity. Also assign right paths to the attack files of each players
-int initialize(int argc, char** argv, char** board, int numRows, int numCols,string& basePath);
+int initialize(int argc, char** argv, char** board, int numRows, int numCols, string& basePath, bool* useAnimation, int* delay);
 
 //Check if the board is valid. if yes returns true, Otherwise returns false and prints to console the relevant mistakes
 bool checkBoard(char** board, int* mistakes);

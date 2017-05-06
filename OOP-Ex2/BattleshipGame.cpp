@@ -31,7 +31,7 @@ void BattleshipGame::initPlayerBoard(int playerNum) const{
 	delete[] playerBoard;
 }
 
-void BattleshipGame::playGame() {
+void BattleshipGame::playGame(bool useAnimation, int delay) {
 	pair<AttackResult, bool> AttackResTupple;
 	AttackResult currAttackRes;
 	int i, j, sectorScore;
@@ -39,8 +39,12 @@ void BattleshipGame::playGame() {
 	bool wasAlreadyHit;
 	bool endGame = false;
 
-	system("cls");				// clear the console
-	printColorBoard();			// printing stating board
+	if (useAnimation) {
+		system("cls");				// clearing the console
+		printColorBoard();			// printing stating board
+		hideCursor();				// hiding the console cursor
+		Sleep(delay);
+	}
 
 	//0 iff its A's turn
 	int turnOf = 0;
@@ -65,8 +69,11 @@ void BattleshipGame::playGame() {
 		i = currAttack.first - 1;
 		j = currAttack.second - 1;
 		
-		//updateColorBoard(i, j);
-		//hideCursor();
+		if (useAnimation) {
+			updateColorBoard(i, j, delay);
+			hideCursor();
+			Sleep(delay);
+		}
 
 
 		if (BoardUtils::selfHit(mainBoard[i][j], turnOf)) {
@@ -116,6 +123,13 @@ void BattleshipGame::playGame() {
 		}
 		getNextAttack(turnOf, endGame, currAttack);
 		selfHit = false;
+	}
+
+	if (useAnimation) {
+		// skipping the color board in order to print the results
+		gotoxy(15, 0);
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(hConsole, WHITE_COLOR);
 	}
 
 	if ((numOfShipsA) && (!numOfShipsB))
@@ -246,8 +260,8 @@ void BattleshipGame::printColorBoard() const
 	/*
 	for (int k = 1; k < 400; k++)
 	{
-		SetConsoleTextAttribute(hConsole, k);
-		cout << k << " I want to be nice today!" << endl;
+	SetConsoleTextAttribute(hConsole, k);
+	cout << k << " I want to be nice today!" << endl;
 	}
 	*/
 	SetConsoleTextAttribute(hConsole, WHITE_COLOR);
@@ -262,7 +276,7 @@ void BattleshipGame::printColorBoard() const
 				SetConsoleTextAttribute(hConsole, PLAYER_A_COLOR);
 				cout << mainBoard[i][j] << " ";
 			}
-			if ((97 < mainBoard[i][j]) && (mainBoard[i][j] < 122))  {			// player B
+			if ((97 < mainBoard[i][j]) && (mainBoard[i][j] < 122)) {			// player B
 				SetConsoleTextAttribute(hConsole, PLAYER_B_COLOR);
 				cout << mainBoard[i][j] << " ";
 			}
@@ -277,40 +291,67 @@ void BattleshipGame::printColorBoard() const
 	}
 	SetConsoleTextAttribute(hConsole, WHITE_COLOR);
 	cout << "|______________________|" << endl;
+	cout << "Player A: ";
+	SetConsoleTextAttribute(hConsole, 144);
+	cout << " ";
+	SetConsoleTextAttribute(hConsole, WHITE_COLOR);
+	cout << ", Player B: ";
+	SetConsoleTextAttribute(hConsole, 207);
+	cout << " " << endl;
 }
 
 void BattleshipGame::gotoxy(int i, int j)
 {
 	COORD coord;
-	coord.X = i;
-	coord.Y = j;
+	coord.X = j;
+	coord.Y = i;
 	SetConsoleCursorPosition(
 		GetStdHandle(STD_OUTPUT_HANDLE),
 		coord
 	);
 }
 
-void BattleshipGame::updateColorBoard(int i, int j)
+void BattleshipGame::updateColorBoard(int i, int j, int delay) const
 {
 	// line/col offsets due to the board boarders
-	int lineOffset = 2, colOffset = 2;
-	
-	gotoxy(i + lineOffset, j*2 + colOffset);
+	int lineOffset = 2, colOffset = 2, color = WHITE_COLOR;
+	int x = j * 2 + colOffset, y = i + lineOffset;
+
+	// moving head to attack position
+	gotoxy(y, x);
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	// setting X color due to type of the tile
 	if (mainBoard[i][j] == 'B' || mainBoard[i][j] == 'P' || mainBoard[i][j] == 'M' || mainBoard[i][j] == 'D')
 	{
-		SetConsoleTextAttribute(hConsole, PLAYER_A_COLOR);
+		color = PLAYER_A_COLOR;
 	}
 	if (mainBoard[i][j] == 'b' || mainBoard[i][j] == 'p' || mainBoard[i][j] == 'm' || mainBoard[i][j] == 'd')
 	{
-		SetConsoleTextAttribute(hConsole, PLAYER_B_COLOR);
+		color = PLAYER_B_COLOR;
 	}
 	if (mainBoard[i][j] == ' ')
 	{
-		SetConsoleTextAttribute(hConsole, SEA_COLOR);
+		color = SEA_COLOR;
 	}
+
+	// bombing animation using '@'
+	SetConsoleTextAttribute(hConsole, BOMB_COLOR);
+	cout << "@";
+	Sleep(delay);
+	gotoxy(y, x);
+	cout << " ";
+	Sleep(delay);
+	gotoxy(y, x);
+	cout << "@";
+	Sleep(delay);
+	gotoxy(y, x);
+	cout << " ";
+	Sleep(delay);
+
+	// marking the tile
+	SetConsoleTextAttribute(hConsole, color);
+	gotoxy(y, x);
 	cout << "X";
 }
 

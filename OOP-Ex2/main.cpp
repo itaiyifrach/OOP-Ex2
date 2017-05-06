@@ -4,11 +4,15 @@
 int main(int argc, char** argv) 
 {
 	string basePath;
+	// by default: use animation with delay of 1.5s
+	bool useAnimation = true;
+	int delay = 1500;
+
 	char** mainBoard = new char*[ROWS];
 	for (int i = 0; i < ROWS; ++i)
 		mainBoard[i] = new char[COLS];
 		
-	if (initialize(argc, argv, mainBoard, ROWS, COLS,basePath) < 0) {
+	if (initialize(argc, argv, mainBoard, ROWS, COLS,basePath, &useAnimation, &delay) < 0) {
 		delete[](mainBoard);
 		return -1;
 	}
@@ -43,7 +47,7 @@ int main(int argc, char** argv)
 		delete[](mainBoard);
 		return -1;
 	}
-	game.playGame();
+	game.playGame(useAnimation, delay);
 
 	delete[](mainBoard);
 	return 0;

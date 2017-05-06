@@ -9,9 +9,10 @@
 #define POINTS_STR "Points:"
 #define PLAYER_A_POINTS_STR "Player A: "
 #define PLAYER_B_POINTS_STR "Player B: "
-#define PLAYER_A_COLOR 9
-#define PLAYER_B_COLOR 12
+#define PLAYER_A_COLOR 9	//blue
+#define PLAYER_B_COLOR 12	//red
 #define SEA_COLOR 11
+#define BOMB_COLOR 14	//yellow
 #define WHITE_COLOR 15
 
 class BattleshipGame
@@ -64,7 +65,7 @@ public:
 	}
 
 	//Main loop of the gameplay
-	void playGame();
+	void playGame(bool useAnimation, int delay);
 
 private:
 	// returns attack result of the attack in coor(i,j) and updates mainBoard using "updateBaordAndCheckSink"
@@ -80,9 +81,10 @@ private:
 
 	void BattleshipGame::getNextAttack(int& turnOf, bool& endGame, pair<int, int>& currAttack) const;
 
+	// Animation functions
 	void printColorBoard() const;
 	static void gotoxy(int i, int j);
-	void updateColorBoard(int i, int j);
+	void updateColorBoard(int i, int j, int delay) const;
 	static void hideCursor();
 };
 

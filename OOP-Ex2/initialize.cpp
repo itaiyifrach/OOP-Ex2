@@ -1,17 +1,41 @@
 #include "initialize.h"
 
-int initialize(int argc, char** argv, char** board, int numRows, int numCols,string& basePath) {
+int initialize(int argc, char** argv, char** board, int numRows, int numCols,string& basePath, bool* useAnimation, int* delay) {
 	string boardPath;
     
 	//if didn't get argument- path is the cwd, else it is the path given in argv[1]
-	if (argc <= 1)
+	auto temp = _getcwd(nullptr, 256);
+	basePath = temp;
+	free(temp);
+	
+	if (argc == 2)
 	{
-		auto temp = _getcwd(nullptr, 256);	
-		basePath = temp;
-		free(temp);
-	}		
+		if (argv[1] == "-quiet")
+		{
+			*useAnimation = false;
+		}
+		else
+		{
+			basePath = argv[1];
+		}
+	}
+	else if (argc == 3)
+	{
+		if (argv[1] == "-delay")
+		{
+			*delay = atoi(argv[2]);
+		}
+		else
+		{
+			basePath = argv[1];
+			*useAnimation = false;
+		}
+	}
 	else
-		basePath = argv[1];		
+	{
+		basePath = argv[1];
+		*delay = atoi(argv[3]);
+	}
 	
 	//check if there was no board file
 	if(parsePath(basePath,boardPath)!=0)
